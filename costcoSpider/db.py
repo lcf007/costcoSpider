@@ -31,7 +31,7 @@ def cursor_db(conn):
     return conn.cursor()
 
 
-class ReviewSql(object):
+class Sql(object):
     conn = conn_db()
     cursor = cursor_db(conn)
 
@@ -42,8 +42,20 @@ class ReviewSql(object):
         item = cls.cursor.fetchall()
         return item
 
-
-print(ReviewSql.fetchDept())
+    @classmethod
+    def insert_product(cls, prod):
+        print("--------------------prod---------------------------------")
+        print(prod)
+        sql = "INSERT INTO `product`(`url`, `deptid`, `curprice`, `lowprice`, `highprice`)" \
+              "VALUES ( '%s', '%d', %d, '%d', '%d')" % \
+              (prod['url'], 1, prod['price'], prod['price'], prod['price'])
+        try:
+            cls.cursor.execute(sql)
+            cls.conn.commit()
+        except pymysql.MySQLError as e:
+            print(e)
+            cls.conn.rollback()
+        pass
 
 
 
